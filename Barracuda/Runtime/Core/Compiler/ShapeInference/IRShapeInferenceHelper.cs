@@ -541,21 +541,25 @@ namespace Unity.Barracuda.Compiler.IRShapeInferenceHelper
                 }
                 case Layer.Type.Expand:
                 {
+                    Debug.Log("544 Expand");
                     if (inputShapes.Length > 1)
                         return null;
 
                     var size = layer.pool.ToList();
                     var inputShape = ShapeToOnnxLayout(inputShapes[0], inputRanks[0]);
+                    Debug.Log("550 Expand");
 
                     int rankO = Math.Max(size.Count, inputShape.Count);
                     for (int i = 0; i < rankO - size.Count; i++)
                         size.Insert(0, 1);
                     for (int i = 0; i < rankO - inputShape.Count; i++)
                         inputShape.Insert(0, 1);
+                    Debug.Log("557 Expand");
 
                     var tiledShape = new int[rankO];
                     for (int i = 0; i < rankO; i++)
                         tiledShape[i] = Mathf.Max(size[i], inputShape[i]);
+                    Debug.Log("562 Expand");
 
                     return OnnxLayoutToTensorShape(tiledShape);
                 }
@@ -651,16 +655,20 @@ namespace Unity.Barracuda.Compiler.IRShapeInferenceHelper
                 }
                 case Layer.Type.Unsqueeze:
                 {
+                    Debug.Log("654 Unsqueeze");
                     TensorShape X = inputShapes[0];
                     int rank = inputRanks[0];
+                    Debug.Log("657 Unsqueeze");
 
                     if (rank < 0)
                         return null;
+                    Debug.Log("660 Unsqueeze");
 
                     var nchwShape = ShapeToOnnxLayout(X, rank);
 
                     if (rank == 0)
                         return new TensorShape(new int[] { 1, 1, 1, 1 });
+                    Debug.Log("665 Unsqueeze");
 
                     for (int a = 0; a < layer.pool.Length; a++)
                     {
@@ -671,6 +679,8 @@ namespace Unity.Barracuda.Compiler.IRShapeInferenceHelper
                         nchwShape.Insert(axis, 1);
                         rank++;
                     }
+                    Debug.Log("675 Unsqueeze");
+
 
                     return OnnxLayoutToTensorShape(nchwShape.ToArray());
                 }
