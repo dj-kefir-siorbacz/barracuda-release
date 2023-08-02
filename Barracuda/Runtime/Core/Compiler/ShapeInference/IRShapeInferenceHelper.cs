@@ -749,6 +749,7 @@ namespace Unity.Barracuda.Compiler.IRShapeInferenceHelper
                     return OnnxLayoutToTensorShape(sliced.ToArray());
                 }
                 default:
+                    Debug.Log("752 default: " + layer.ToString());
                     throw new NotImplementedException("InferOutputShapeNCHW: Unhandled layer: " + layer.ToString());
             }
         }
@@ -778,6 +779,8 @@ namespace Unity.Barracuda.Compiler.IRShapeInferenceHelper
                     layerInputShapes[i] = ishape.Value;
                     layerInputShapeRanks[i] = ranksByName[l.inputs[i]].Value;
                 }
+                Debug.Log("782 foreach (var l in model.layers): " + l.ToString());
+
                 TensorShape? outputShape = allshapesAreKnown ? InferOutputShapeNCHW(l, layerInputShapeRanks, layerInputShapes) : null;
                 shapesByName[l.name] = outputShape;
             }
