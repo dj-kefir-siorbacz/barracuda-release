@@ -173,6 +173,7 @@ namespace Unity.Barracuda.Compiler.IRShapeInferenceHelper
 
         static public TensorShape? InferOutputShapeNCHW(Layer layer, int?[] inputRanks, TensorShape?[] inputShapes)
         {
+            Debug.Log("176 InferOutputShapeNCHW: " + layer.type.ToString() );
             switch (layer.type)
             {
                 case Layer.Type.Conv3D:
@@ -877,6 +878,7 @@ namespace Unity.Barracuda.Compiler.IRShapeInferenceHelper
                         return OnnxLayoutToTensorShape(sliced.ToArray());
                 }
                 default:
+                    Debug.Log("880 default" + layer.ToString());
                     throw new NotImplementedException("InferOutputShapeNCHW: Unhandled layer: " + layer.ToString());
             }
         }
@@ -884,6 +886,7 @@ namespace Unity.Barracuda.Compiler.IRShapeInferenceHelper
         // TODO merge that with NHWC : flank by transpose shape and call InferOutputShapeNHWC
         public static void UpdateKnownTensorShapesNCHW(Model model, ref IDictionary<string, int?> ranksByName, ref IDictionary<string, TensorShape?> shapesByName)
         {
+            int i = 0;
             foreach (var l in model.layers)
             {
                 TensorShape?[] layerInputShapes = new TensorShape?[l.inputs.Length];
@@ -905,10 +908,14 @@ namespace Unity.Barracuda.Compiler.IRShapeInferenceHelper
                 // + compute rank
                 int? outputRank = RankInference.InferOutputRank(l, layerInputShapeRanks, layerInputShapes);
                 ranksByName[l.name] = outputRank;
+                Debug.Log("909 foreach" + l.ToString() + " == " + i.ToString() );
+
                 TensorShape? outputShape = InferOutputShapeNCHW(l, layerInputShapeRanks, layerInputShapes);
                 outputRank = RankInference.InferOutputRank(l, layerInputShapeRanks, layerInputShapes);
                 ranksByName[l.name]  = outputRank;
                 shapesByName[l.name] = outputShape;
+                
+                i++;
             }
         }
         public static TensorShape?[] ListTemporaryTensorShapesNCHW(Model model, IDictionary<string, TensorShape> inputShapes, ref IDictionary<string, int?> ranksByName,
