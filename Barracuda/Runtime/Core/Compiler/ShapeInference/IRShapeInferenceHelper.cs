@@ -556,8 +556,10 @@ namespace Unity.Barracuda.Compiler.IRShapeInferenceHelper
                         inputShape.Insert(0, 1);
                     Debug.Log("557 Expand");
 
+                    Debug.Log("559-2 Expand: rank0:" + rankO.ToString());
                     var tiledShape = new int[rankO];
                     for (int i = 0; i < rankO; i++)
+                        Debug.Log("562-2 Expand:\n i: " + i.ToString() + "\n size[i: ]" + size[i].ToString() + "\n inputShape[i]: " +  inputShape[i].ToShape() );
                         tiledShape[i] = Mathf.Max(size[i], inputShape[i]);
                     Debug.Log("562 Expand");
 
